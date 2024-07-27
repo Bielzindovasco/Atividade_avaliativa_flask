@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Adicionar Música</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Adicionar Música à Playlist</h1>
+        <nav>
+            <a href="{{ url_for('playlist_list') }}">Voltar para a Lista de Playlists</a>
+        </nav>
+    </header>
+    <main>
+        <form action="{{ url_for('add_music', index=index) }}" method="POST">
+            <label for="music_title">Título da Música:</label>
+            <input type="text" id="music_title" name="music_title" required>
+            <br>
+            <label for="music_artist">Artista:</label>
+            <input type="text" id="music_artist" name="music_artist" required>
+            <br>
+            <button type="submit">Adicionar Música</button>
+        </form>
+    </main>
+</body>
+</html>
