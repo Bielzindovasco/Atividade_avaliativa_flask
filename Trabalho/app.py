@@ -2,67 +2,43 @@ from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
-
 playlists = []
-musicas = []
 
-class Musica:
-    def __init__(self, nome, artista, duracao):
-        self.nome = nome
-        self.artista = artista
-        self.duracao = duracao
-
-class Playlist:
-    def __init__(self, nome):
-        self.nome = nome
-        self.musicas = []
-
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("index.html", playlists=playlists)
+    return render_template('index.html')
 
-@app.route("/criar_playlist", methods=["GET", "POST"])
-def criar_playlist():
-    if request.method == "POST":
-        nome = request.form["nome"]
-        playlist = Playlist(nome)
-        playlists.append(playlist)
-        return redirect(url_for("index"))
-    return render_template("criar_playlist.html")
+@app.route('/playlists')
+def playlist_list():
+    return render_template('playlist_list.html', playlists=playlists)
 
-@app.route("/adicionar_musica/<int:playlist_id>", methods=["GET", "POST"])
-def adicionar_musica(playlist_id):
-    playlist = playlists[playlist_id]
-    if request.method == "POST":
-        nome = request.form["nome"]
-        artista = request.form["artista"]
-        duracao = request.form["duracao"]
-        musica = Musica(nome, artista, duracao)
-        playlist.musicas.append(musica)
-        return redirect(url_for("index"))
-    return render_template("adicionar_musica.html", playlist=playlist)
+@app.route('/playlist/create', methods=['GET', 'POST'])
+def create_playlist():
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        playlists.append({'title': title, 'description': description})
+        return redirect(url_for('playlist_list'))
+    return render_template('playlist_form.html', action='create')
 
-@app.route("/remover_musica/<int:playlist_id>/<int:musica_id>")
-def remover_musica(playlist_id, musica_id):
-    playlist = playlists[playlist_id]
-    musica = playlist.musicas[musica_id]
-    playlist.musicas.remove(musica)
-    return redirect(url_for("index"))
+@app.route('/playlist/edit/<int:index>', methods=['GET', 'POST'])
+def edit_playlist(index):
+    if index < 0 or index >= len(playlists):
+        return "Playlist não encontrada", 404
+    if request.method == 'POST':
+        title = request.form.get('title')
+        description = request.form.get('description')
+        playlists[index] = {'title': title, 'description': description}
+        return redirect(url_for('playlist_list'))
+    playlist = playlists[index]
+    return render_template('playlist_form.html', action='edit', playlist=playlist, index=index)
 
-@app.route("/editar_playlist/<int:playlist_id>", methods=["GET", "POST"])
-def editar_playlist(playlist_id):
-    playlist = playlists[playlist_id]
-    if request.method == "POST":
-        nome = request.form["nome"]
-        playlist.nome = nome
-        return redirect(url_for("index"))
-    return render_template("editar_playlist.html", playlist=playlist)
+@app.route('/playlist/delete/<int:index>', methods=['POST'])
+def delete_playlist(index):
+    if index < 0 or index >= len(playlists):
+        return "Playlist não encontrada", 404
+    playlists.pop(index)
+    return redirect(url_for('playlist_list'))
 
-@app.route("/deletar_playlist/<int:playlist_id>")
-def deletar_playlist(playlist_id):
-    playlist = playlists[playlist_id]
-    playlists.remove(playlist)
-    return redirect(url_for("index"))
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
