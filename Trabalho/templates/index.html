@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Bem-vindo ao Playlist App</h1>
+        <nav>
+            <a href="{{ url_for('playlist_list') }}">Ver Playlists</a>
+            <a href="{{ url_for('create_playlist') }}">Criar Nova Playlist</a>
+        </nav>
+    </header>
+</body>
+</html>
