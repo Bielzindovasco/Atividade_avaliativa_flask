@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if action == 'create' %}Criar{% else %}Editar{% endif %} Playlist</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>{% if action == 'create' %}Criar{% else %}Editar{% endif %} Playlist</h1>
+        <nav>
+            <a href="{{ url_for('playlist_list') }}">Voltar para a Lista de Playlists</a>
+        </nav>
+    </header>
+    <main>
+        <form action="{{ url_for(action == 'create' and 'create_playlist' or 'edit_playlist', index=index) }}" method="POST">
+            <label for="title">Título:</label>
+            <input type="text" id="title" name="title" value="{{ playlist.title if playlist else '' }}" required>
+            <br>
+            <label for="description">Descrição:</label>
+            <textarea id="description" name="description" required>{{ playlist.description if playlist else '' }}</textarea>
+            <br>
+            <button type="submit">{% if action == 'create' %}Criar{% else %}Salvar{% endif %}</button>
+        </form>
+    </main>
+</body>
+</html>
